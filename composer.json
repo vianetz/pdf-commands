@@ -1,0 +1,32 @@
+{
+  "name": "vianetz/pdf-commands",
+  "description": "A collection of CLI commands for generating and modifying PDF documents.",
+  "type": "project",
+  "keywords": [
+    "vianetz",
+    "pdf"
+  ],
+  "homepage": "https://www.vianetz.com",
+  "license": "GPL-3.0",
+  "require": {
+    "vianetz/pdf-generator": "^1.0",
+    "symfony/console": "^3.4"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "*"
+  },
+  "authors": [
+    {
+      "name": "Christoph Massmann",
+      "email": "c.massmann@vianetz.com"
+    }
+  ],
+  "support": {
+    "email": "support@vianetz.com"
+  },
+  "autoload": {
+    "psr-4": {
+      "Vianetz\\PdfCommands\\": "src/"
+    }
+  }
+}
