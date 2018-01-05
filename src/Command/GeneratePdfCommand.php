@@ -22,6 +22,7 @@ namespace Vianetz\PdfCommands\Command;
 
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Style\SymfonyStyle;
@@ -40,19 +41,30 @@ class GeneratePdfCommand extends Command
             ->setDescription('Generates the pdf file from html input.')
             ->addArgument('output-filename', InputArgument::REQUIRED)
             ->addArgument('input-filename', InputArgument::IS_ARRAY | InputArgument::REQUIRED)
+            ->addOption('paper-orientation', 'o', InputOption::VALUE_OPTIONAL, '', Config::PAPER_ORIENTATION_PORTRAIT)
+            ->addOption('paper-size', 's', InputOption::VALUE_OPTIONAL, '', 'a4')
             ->setHelp('This command allows you to create a pdf file from given input file(s).');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $filename = $input->getArgument('output-filename');
+        $paperOrientation = $input->getOption('paper-orientation');
+        if (empty($paperOrientation) === true || ($paperOrientation !== Config::PAPER_ORIENTATION_PORTRAIT && $paperOrientation !== Config::PAPER_ORIENTATION_LANDSCAPE)) {
+            $paperOrientation = Config::PAPER_ORIENTATION_PORTRAIT;
+        }
+        $paperSize = $input->getOption('paper-size');
+
         $io = new SymfonyStyle($input, $output);
 
         try {
             $config = new Config();
+            $config->setPdfOrientation($paperOrientation);
+            $config->setPdfSize($paperSize);
+
             $eventManager = new EventManager();
-            $generator = new Dompdf();
-            $merger = new Fpdi();
+            $generator = new Dompdf($config);
+            $merger = new Fpdi($config);
 
             $pdf = new Pdf($config, $eventManager, $generator, $merger);
 
